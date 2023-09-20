@@ -2,10 +2,11 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
+	"tech-school/util"
 )
 
 func TestTransferTx(t *testing.T) {
@@ -25,18 +26,9 @@ func TestTransferTx(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		go func() {
-			// Converts int64 to sql.NullInt64
-			var fromAccountID sql.NullInt64
-			fromAccountID.Int64 = account1.ID
-			fromAccountID.Valid = true
-
-			var toAccountID sql.NullInt64
-			toAccountID.Int64 = account2.ID
-			toAccountID.Valid = true
-
 			result, err := store.TransferTx(ctx, TransferTxParams{
-				FromAccountID: fromAccountID,
-				ToAccountID:   toAccountID,
+				FromAccountID: util.SQLNullInt64[int64](account1.ID),
+				ToAccountID:   util.SQLNullInt64[int64](account2.ID),
 				Amount:        amount,
 			})
 

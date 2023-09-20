@@ -17,17 +17,9 @@ func createRandomTransfer(t *testing.T) Transfer {
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 
-	var fromAccountID sql.NullInt64
-	fromAccountID.Int64 = account1.ID
-	fromAccountID.Valid = true
-
-	var toAccountID sql.NullInt64
-	toAccountID.Int64 = account2.ID
-	toAccountID.Valid = true
-
 	arg := CreateTransferParams{
-		FromAccountID: fromAccountID,
-		ToAccountID:   toAccountID,
+		FromAccountID: util.SQLNullInt64[int64](account1.ID),
+		ToAccountID:   util.SQLNullInt64[int64](account2.ID),
 		Amount:        util.RandomMoney(),
 	}
 

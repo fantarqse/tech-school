@@ -16,12 +16,8 @@ func createRandomEntry(t *testing.T) Entry {
 
 	account := createRandomAccount(t)
 
-	var accID sql.NullInt64
-	accID.Int64 = account.ID
-	accID.Valid = true
-
 	arg := CreateEntryParams{
-		AccountID: accID,
+		AccountID: util.SQLNullInt64[int64](account.ID),
 		Amount:    util.RandomMoney(),
 	}
 
