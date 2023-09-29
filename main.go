@@ -8,16 +8,16 @@ import (
 
 	"tech-school/api"
 	db "tech-school/db/sqlc"
-)
-
-const (
-	dbDriver string = "postgres"
-	dbSource string = "postgresql://root:secret@localhost:5436/simple_bank?sslmode=disable"
-	addr     string = "0.0.0.0:8888"
+	"tech-school/util"
 )
 
 func main() {
-	conn, err := sql.Open(dbDriver, dbSource)
+	cfg, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatalf("failed to load the config: %v", err)
+	}
+
+	conn, err := sql.Open(cfg.DBDriver, cfg.DBSource)
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v", err)
 	}
@@ -25,7 +25,7 @@ func main() {
 	store := db.NewStore(conn)
 
 	server := api.NewServer(store)
-	if err := server.Run(addr); err != nil {
+	if err := server.Run(cfg.Address); err != nil {
 		log.Fatalf("failed to start the server: %v", err)
 	}
 }
